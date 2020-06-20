@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
-import Movie from "./Movie";
+import Movie from "./components/Movie";
+import "./App.css";
 // npm install axios
 // axios = fetch() 와 같은 역할을 한다. url을 불러온다.
 // https://yts-proxy.now.sh/list_movies.json
@@ -34,21 +35,27 @@ class App extends React.Component {
     // 같은 class 안의 state 오브젝트에 있는 isLoading을 불러와 사용할 수 있도록 선언
     const { isLoading, movies } = this.state;
     return (
-      <div>
-        {isLoading
-          ? "Loading..."
-          : movies.map((movie) => (
+      <section className="container">
+        {isLoading ? (
+          <div className="loader">
+            <span className="loader__text">Loading...</span>
+          </div>
+        ) : (
+          <div className="movies">
+            {movies.map((movie) => (
               <Movie
                 key={movie.id}
                 id={movie.id}
+                year={movie.year}
                 title={movie.title}
                 summary={movie.summary}
                 poster={movie.medium_cover_image}
-                year={movie.year}
-                rating={movie.rating}
+                genres={movie.genres}
               />
             ))}
-      </div>
+          </div>
+        )}
+      </section>
     );
   }
 }
