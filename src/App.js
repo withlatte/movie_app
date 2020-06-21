@@ -1,63 +1,24 @@
 import React from "react";
-import axios from "axios";
-import Movie from "./components/Movie";
-import "./App.css";
-// npm install axios
-// axios = fetch() 와 같은 역할을 한다. url을 불러온다.
-// https://yts-proxy.now.sh/list_movies.json
+import { HashRouter, Route } from "react-router-dom";
+import Home from "./routes/Home";
+import About from "./routes/About";
+import Detail from "./routes/Detail";
+import Navigation from "./components/Navigation";
 
-class App extends React.Component {
-  state = {
-    isLoading: true,
-    movies: [],
-  };
-
-  // async 와 await : axios를 통해 url을 불러올때 약간의 시간이 걸린다.
-  // axios 작업이 종료될 때까지 기다리는 방법이다. ES6에 추가된 기능
-  getMovies = async () => {
-    const {
-      // 아래 구문은 movies.data.data.movies 와 동일하다.
-      data: {
-        data: { movies },
-      },
-    } = await axios.get(
-      "https://yts-proxy.now.sh/list_movies.json?sort_by=rating"
-    );
-    this.setState({ movies, isLoading: false });
-    console.log(movies);
-  };
-
-  componentDidMount() {
-    this.getMovies();
-  }
-
-  render() {
-    // 같은 class 안의 state 오브젝트에 있는 isLoading을 불러와 사용할 수 있도록 선언
-    const { isLoading, movies } = this.state;
-    return (
-      <section className="container">
-        {isLoading ? (
-          <div className="loader">
-            <span className="loader__text">Loading...</span>
-          </div>
-        ) : (
-          <div className="movies">
-            {movies.map((movie) => (
-              <Movie
-                key={movie.id}
-                id={movie.id}
-                year={movie.year}
-                title={movie.title}
-                summary={movie.summary}
-                poster={movie.medium_cover_image}
-                genres={movie.genres}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-    );
-  }
+function App() {
+  return (
+    <HashRouter>
+      <Navigation />
+      {/* /about 의 주소를 열면 About 컴포넌트를 불러온다
+      아래와 같이 두개의 라우트를 쓸때 path='/' 과 path='/about'은 리액트에서
+      불러오는 순서에 따라 첫째 / 둘째 /about 이므로 부모-자식관계처럼 인식하고
+      Home과 About 두개의 컴포넌트를 동일하게 해석하고 두 개의 컴포넌트를
+      모두 한페이지에 보여준다. 이를 방지하기 위해 exact={true} 를 사용한다 */}
+      <Route path="/" exact={true} component={Home} />
+      <Route path="/about" component={About} />
+      <Route path="/movie/:id" component={Detail} />
+    </HashRouter>
+  );
 }
 
 export default App;
